@@ -8,18 +8,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Data
-public class Team {
+public class Stadium {
     @Id
     private String id;
     private String footballApiId;
     private String name;
-    private String code;
-    private String leagueId;
-    private String homeStadiumId;
-    private String country;
-    private int founded;
+    private String city;
+    private int capacity;
 }
