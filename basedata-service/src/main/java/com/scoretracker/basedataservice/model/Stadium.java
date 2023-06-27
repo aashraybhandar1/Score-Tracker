@@ -1,4 +1,4 @@
-package com.scoretracker.metadataservice.model;
+package com.scoretracker.basedataservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,14 +7,16 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
+@Document
 @NoArgsConstructor
 @AllArgsConstructor
-@Document
 @Builder
-public class League {
+@Data
+public class Stadium {
     @Id
     private String id;
-    private String footballApiID;
-    private String country;
+    private String footballApiId;
+    private String name;
+    private String city;
+    private int capacity;
 }
