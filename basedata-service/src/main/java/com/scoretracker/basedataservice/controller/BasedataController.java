@@ -1,6 +1,6 @@
-package com.scoretracker.metadataservice.controller;
+package com.scoretracker.basedataservice.controller;
 
-import com.scoretracker.metadataservice.service.MetadataService;
+import com.scoretracker.basedataservice.service.BasedataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/fetchMetadata")
-public class MetadataController {
+@RequestMapping("api/fetchBasedata")
+public class BasedataController {
 
-    private final MetadataService metadataService;
+    private final BasedataService basedataService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public String getAllProducts(){
-        return metadataService.loadBaseData();
+    public String fetchBaseData(){
+        return basedataService.loadBaseData();
     }
 }
