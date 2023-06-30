@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -33,11 +35,13 @@ public class BasedataService {
     private String rapidApiLeagueUrl;
 
     public String loadBaseData(){
-        loadLeagueData();
+        List<String> leagueCodes = loadLeagueData();
+        loadTeamandStadiumData();
         return "Basedata loaded successfully";
     }
 
-    public void loadLeagueData (){
+    public ArrayList<String> loadLeagueData (){
+        ArrayList<String> leagueCodes = new ArrayList<String>();
         Arrays.stream(Constants.counties).forEach(country -> {
              String response = webClientBuilder.build().get().uri(rapidApiLeagueUrl+""+country)
                     .header("X-RapidAPI-Key", rapidApiKey)
@@ -49,12 +53,24 @@ public class BasedataService {
                     JsonNode fieldOfInterest = jsonNode.get("response").get(0).get("league");
                     League league = objectMapper.treeToValue(fieldOfInterest, League.class);
                     league.setCountry(country);
+                    leagueCodes.add(league.getFootballApiID());
                     leagueRepository.save(league);
                 } catch (JsonMappingException e) {
                     throw new RuntimeException(e);
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
+        });
+        return leagueCodes;
+    }
+
+    public void loadTeamandStadiumData(ArrayList<String> leagueCodes){
+        leagueCodes.forEach(code -> {
+            String response = webClientBuilder.build().get().uri(rapidApiLeagueUrl+""+country)
+                    .header("X-RapidAPI-Key", rapidApiKey)
+                    .header("X-RapidAPI-Host", rapidApiHost)
+                    .retrieve()
+                    .bodyToMono(String.class).block();
         });
     }
 }
