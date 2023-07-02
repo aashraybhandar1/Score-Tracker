@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class LeagueCodeController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Set<String> fetchLeagueCode(){
+    public List<String> fetchLeagueCode(){
         return leagueCodeService.fetchLeagueCode();
     }
 }
