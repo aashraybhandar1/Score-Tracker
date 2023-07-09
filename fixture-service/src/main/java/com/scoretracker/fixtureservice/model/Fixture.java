@@ -1,9 +1,12 @@
 package com.scoretracker.fixtureservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -14,10 +17,13 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Fixture {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @JsonProperty("id")
     private String footballApiId;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
     private String referee;
     private String timestamp;
     private String stadiumId;
@@ -25,7 +31,8 @@ public class Fixture {
     private String homeTeamId;
     private String awayTeamId;
     private String homeTeamName;
-    private String getAwayTeamName;
-    private String date;
+    private String awayTeamName;
     private String season;
+    private String country;
+    private String leagueName;
 }

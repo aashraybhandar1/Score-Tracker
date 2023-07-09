@@ -12,7 +12,7 @@ public class FixtureController {
     private final FixtureService fixtureService;
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public String[] fetchSeasonFixture(@RequestParam String seasonYear){
+    public String fetchSeasonFixture(@RequestParam String seasonYear){
          return fixtureService.fetchSeasonFixture(seasonYear);
     }
 }

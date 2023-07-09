@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scoretracker.fixtureservice.model.Fixture;
+import com.scoretracker.fixtureservice.model.FixtureLeagueResponse;
+import com.scoretracker.fixtureservice.model.FixtureTeamResponse;
 import com.scoretracker.fixtureservice.repository.FixtureRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
+
+/*
+ TO DO:
+ 1) Introduce logging for tracking if request performs as expected
+ 2) Improve response for this service
+
+ */
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +45,7 @@ public class FixtureService {
     private String rapidApiFixtureUrl;
 
 
-    public String [] fetchSeasonFixture(String seasonYear) {
+    public String fetchSeasonFixture(String seasonYear) {
         String [] leagueCodes = webClientBuilder.build().get()
                 .uri("http://localhost:8080/api/fetchLeagueCodes")
                 .retrieve()
@@ -57,26 +66,37 @@ public class FixtureService {
                     .bodyToMono(String.class).block();
             try {
                 JsonNode jsonNode = objectMapper.readTree(response);
-                JsonNode fixtures = jsonNode.get("response");
-                fixtures.forEach(fixture -> {
+                JsonNode fixturesResponse = jsonNode.get("response");
+                fixturesResponse.forEach(fixtureResponse -> {
                     try {
-                        JsonNode bleh = fixture.get("fixture");
-                        Fixture fixture1 = objectMapper.treeToValue(bleh, Fixture.class);
-                        fixture1.setLeagueId(String.valueOf(fixture.get("league").get("id")));
-                        fixture1.setSeason(String.valueOf(fixture.get("league").get("season")));
+                        Fixture fixture = objectMapper.treeToValue(fixtureResponse.get("fixture"), Fixture.class);
+                        FixtureTeamResponse homeTeamResponse = objectMapper.treeToValue(fixtureResponse.get("teams").get("home"), FixtureTeamResponse.class);
+                        FixtureTeamResponse awayTeamResponse = objectMapper.treeToValue(fixtureResponse.get("teams").get("away"), FixtureTeamResponse.class);
+                        FixtureLeagueResponse fixtureLeagueResponse = objectMapper.treeToValue(fixtureResponse.get("league"),FixtureLeagueResponse.class);
+
+                        //Set league related details from response
+                        fixture.setLeagueId(fixtureLeagueResponse.getId());
+                        fixture.setCountry(fixtureLeagueResponse.getCountry());
+                        fixture.setLeagueName(fixtureLeagueResponse.getName());
+                        fixture.setSeason(fixtureLeagueResponse.getSeason());
+
+                        //Set team related details from response
+                        fixture.setAwayTeamId(awayTeamResponse.getId());
+                        fixture.setHomeTeamId(homeTeamResponse.getId());
+                        fixture.setAwayTeamName(awayTeamResponse.getName());
+                        fixture.setHomeTeamName(homeTeamResponse.getName());
+
+                        fixtureRepository.save(fixture);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                    String temp3 = "";
                 });
-                String temp2 = "";
             } catch (JsonMappingException e) {
                 throw new RuntimeException(e);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
-            String temp = "";
         });
-        return leagueCodes;
+        return "Fixture data successfully populated in DB";
     }
 }
