@@ -5,18 +5,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scoretracker.fixtureservice.model.Fixture;
-import com.scoretracker.fixtureservice.model.FixtureLeagueResponse;
-import com.scoretracker.fixtureservice.model.FixtureTeamResponse;
+import com.scoretracker.fixtureservice.dto.FixtureLeagueResponse;
+import com.scoretracker.fixtureservice.dto.FixtureTeamResponse;
 import com.scoretracker.fixtureservice.repository.FixtureRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 
@@ -30,7 +27,7 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class FixtureService {
+public class SeasonFixtureService {
     private final FixtureRepository fixtureRepository;
     private final ObjectMapper objectMapper;
     private final WebClient.Builder webClientBuilder;
