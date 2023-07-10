@@ -1,8 +1,6 @@
-package com.scoretracker.fixtureservice.model;
+package com.scoretracker.fixtureservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FixtureTeamResponse {
+public class FixtureLeagueResponse {
     private String id;
     private String name;
+    private String country;
+    private String flag;
+    private String round;
+    private String season;
 }
