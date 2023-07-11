@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
+import java.util.List;
 
 public interface FixtureRepository extends JpaRepository<Fixture, Long> {
-    @Query(value = "Select football_api_id, home_team_name, away_team_name, date, league_name, country" +
+    @Query(value = "Select *" +
             "From t_fixture Where date= :date",
             nativeQuery = true)
-    FixtureByDate getFixtureDataByDate(@Param("date") Date date);
+    List<Fixture> getFixtureDataByDate(@Param("date") Date date);
 }
