@@ -3,6 +3,7 @@ package com.scoretracker.fixtureservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scoretracker.fixtureservice.dto.FixtureByDate;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="t_fixture")
+@Table(name="t_fixture", schema = "fixture-service")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Fixture {
     @Id

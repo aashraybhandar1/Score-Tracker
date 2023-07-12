@@ -10,8 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface FixtureRepository extends JpaRepository<Fixture, Long> {
-    @Query(value = "Select *" +
-            "From t_fixture Where date= :date",
+    @Query(value = "Select * From t_fixture Where Date(date) = Date(:date)",
             nativeQuery = true)
     List<Fixture> getFixtureDataByDate(@Param("date") Date date);
 }
