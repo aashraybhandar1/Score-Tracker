@@ -50,7 +50,6 @@ public class SeasonFixtureService {
                 .block();
         /* Improve the web Client configuration mechanism so as to have pre built configuration and not the Builder bean*/
         Arrays.stream(leagueCodes).forEach(leagueCode -> {
-            String hello = ""+rapidApiFixtureUrl+"league="+leagueCode+"season="+seasonYear;
             String response = webClientBuilder.exchangeStrategies(ExchangeStrategies.builder()
                     .codecs(configurer -> configurer
                             .defaultCodecs()
