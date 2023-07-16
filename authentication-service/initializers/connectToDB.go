@@ -10,7 +10,6 @@ import (
 var DB *gorm.DB
 
 func ConnectToDB() {
-	//postgres://zqbrhgqs:JmK2uMhkwe6QO_rFhz19IjBOQviJqx-5@mahmud.db.elephantsql.com/zqbrhgqs
 	var err error
 	dsn := os.Getenv("DB")
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
