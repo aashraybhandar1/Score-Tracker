@@ -2,6 +2,7 @@ package main
 
 import (
 	"authentication-service/controllers"
+	"authentication-service/middleware"
 
 	"authentication-service/initializers"
 
@@ -19,7 +20,8 @@ func main() {
 	r := gin.Default()
 
 	r.POST("/signup", controllers.Signup)
-	r.POST("login", controllers.Login)
+	r.POST("/login", controllers.Login)
+	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 
 	r.Run()
 }
