@@ -3,6 +3,7 @@ package main
 import (
 	"authentication-service/controllers"
 	"authentication-service/middleware"
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -20,7 +21,10 @@ func init() {
 	initializers.SyncDatabse()
 }
 
-const ttl = time.Second * 10
+const (
+	ttl     = time.Second * 10
+	checkID = "checkHealth"
+)
 
 type Service struct {
 	consulClient *api.Client
@@ -37,19 +41,41 @@ func NewService() *Service {
 }
 
 func (s *Service) Start() {
-	ln, err := net.Listen("tcp", ":3000")
+	/*ln, err := net.Listen("tcp", ":3000")
 	if err != nil {
 		log.Fatal(err)
-	}
-	s.regis
+	}*/
+	s.registerService()
+	go s.updateHealthCheck()
+	//s.acceptLoop(ln)
 }
 
-func (s *Service) giregisterService() {
+func (s *Service) acceptLoop(ln net.Listener) {
+	for {
+		_, err := ln.Accept()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func (s *Service) updateHealthCheck() {
+	ticker := time.NewTicker(time.Second * 5)
+	for {
+		err := s.consulClient.Agent().UpdateTTL(checkID, "online", api.HealthPassing)
+		if err != nil {
+			log.Fatal(err)
+		}
+		<-ticker.C
+	}
+}
+
+func (s *Service) registerService() {
 	check := &api.AgentServiceCheck{
 		DeregisterCriticalServiceAfter: ttl.String(),
 		TLSSkipVerify:                  true,
 		TTL:                            ttl.String(),
-		CheckID:                        "checkalive",
+		CheckID:                        checkID,
 	}
 
 	register := &api.AgentServiceRegistration{
@@ -61,19 +87,26 @@ func (s *Service) giregisterService() {
 		Check:   check,
 	}
 	err := s.consulClient.Agent().ServiceRegister(register)
+	fmt.Println("In registerr")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	s.registerService
 }
 
 func main() {
+	fmt.Println("yolllooo 123456")
+	s := NewService()
+	s.Start()
+
+	fmt.Println("Testing 123456")
+
 	r := gin.Default()
 
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
+	fmt.Println("Hello worldddinggggg")
 
 	r.Run()
+	fmt.Println("Hello worlddd")
 }
