@@ -1,4 +1,4 @@
 /basedata-service/src/main/resources/application-dev.properties
 /fixture-service/src/main/resources/application-dev.properties
-/authentication-service/.env
-/authentication-service/authentication-service
+/go-services/authentication-service/.env
+/go-services/authentication-service/authentication-service
