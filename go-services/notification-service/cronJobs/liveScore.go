@@ -1,25 +1,33 @@
 package cronjobs
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
+	"os"
+	"score-tracker/authentication-service/models"
 )
 
 func GetLiveScore() {
-	fmt.Println("IN HERE")
 	url := "https://api-football-v1.p.rapidapi.com/v3/fixtures?live=all"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
-	req.Header.Add("X-RapidAPI-Key", "")
+	req.Header.Add("X-RapidAPI-Key", os.Getenv("RAPID_API_KEY"))
 	req.Header.Add("X-RapidAPI-Host", "api-football-v1.p.rapidapi.com")
 
 	res, _ := http.DefaultClient.Do(req)
+	body, _ := ioutil.ReadAll(res.Body)
 
 	defer res.Body.Close()
-	body, _ := io.ReadAll(res.Body)
 
-	fmt.Println(res)
-	fmt.Println(string(body))
+	temp := models.LiveFixture{}
+
+	err := json.Unmarshal([]byte(body), &temp)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(temp.Response[0].Fixture)
+
 }
