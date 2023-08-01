@@ -28,6 +28,5 @@ func GetLiveScore() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(temp.Response[0].Fixture)
-
+	fmt.Println(temp.Response[0].CurrentFixture)
 }
