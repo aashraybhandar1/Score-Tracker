@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"score-tracker/authentication-service/models"
+	"score-tracker/notification-service/models"
 )
 
 func GetLiveScore() {
