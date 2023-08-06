@@ -2,7 +2,6 @@ package kafkaInit
 
 import (
 	"context"
-	"time"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -13,8 +12,8 @@ func ConnectToKafka() *kafka.Conn {
 	if err != nil {
 		panic("Failed to connect to Kafka")
 	}
-	conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
-	conn.SetWriteDeadline(time.Now().Add(time.Second * 8))
+	//conn.SetWriteDeadline(time.Now().Add(time.Second * 10))
+	//conn.SetWriteDeadline(time.Now().Add(time.Second * 8))
 
 	return conn
 }
