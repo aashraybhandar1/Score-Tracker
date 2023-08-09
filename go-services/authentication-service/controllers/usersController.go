@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"score-tracker/authentication-service/initializers"
@@ -114,4 +115,36 @@ func Validate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": user.(models.User).Email + " is logged in",
 	})
+}
+
+func Register(c *gin.Context) {
+	c.Header("Content-Type", "text/event-stream")
+	c.Header("Cache-Control", "no-cache")
+	c.Header("Connection", "keep-alive")
+
+	updateChan := make(chan string)
+	defer close(updateChan)
+
+	// Start a goroutine to send updates to the client
+	go func() {
+		for {
+			update := time.Now().Format("2006-01-02 15:04:05")
+			updateChan <- update
+			time.Sleep(1 * time.Second) // Send updates every 1 second
+		}
+	}()
+
+	// Loop to write updates to the client as they arrive
+	for {
+		select {
+		case update := <-updateChan:
+			// Write SSE data to the connection
+			c.SSEvent("message", update)
+			c.Writer.Flush()
+		case <-c.Writer.CloseNotify():
+			// Client closed the connection
+			fmt.Println("Client disconnected")
+			return
+		}
+	}
 }
