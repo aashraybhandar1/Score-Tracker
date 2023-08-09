@@ -12,6 +12,7 @@ func StartService() {
 
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
+	r.GET("/registerForUpdates", controllers.Register)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 
 	r.Run()
