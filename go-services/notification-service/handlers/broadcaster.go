@@ -3,25 +3,27 @@ package handlers
 import (
 	"fmt"
 	"log"
+	"strconv"
+	"time"
 )
 
 type Broadcaster struct {
-	newConnection   chan chan []byte
-	closeConnection chan chan []byte
-	connections     map[chan []byte]int32
+	NewConnection   chan chan string
+	CloseConnection chan int32
+	Connections     map[int32]chan string
 }
 
 func (b *Broadcaster) Listen() {
 	var seq int32 = 0
 	for {
 		select {
-		case connection := <-b.newConnection:
-			b.connections[connection] = seq
+		case connection := <-b.NewConnection:
+			b.Connections[seq] = connection
 			seq++
 			fmt.Println("new connection")
 
-		case connection := <-b.closeConnection:
-			delete(b.connections, connection)
+		case connection := <-b.CloseConnection:
+			delete(b.Connections, connection)
 			log.Println("connection closed")
 		}
 	}
@@ -29,22 +31,31 @@ func (b *Broadcaster) Listen() {
 
 func NewBroadcaster() *Broadcaster {
 	broker := Broadcaster{
-		newConnection:   make(chan chan []byte),
-		closeConnection: make(chan chan []byte),
-		connections:     make(map[chan []byte]int32),
+		NewConnection:   make(chan chan string),
+		CloseConnection: make(chan int32),
+		Connections:     make(map[int32]chan string),
 	}
 	return &broker
 }
 
 type Server struct {
-	broadcaster *Broadcaster
+	Broadcaster *Broadcaster
 }
 
 func NewServer() *Server {
 	broadcaster := NewBroadcaster()
 	server := &Server{
-		broadcaster: broadcaster,
+		Broadcaster: broadcaster,
 	}
 	go broadcaster.Listen()
+	go func() {
+		for {
+			update := time.Now().Format("2006-01-02 15:04:05")
+			for k := range server.Broadcaster.Connections {
+				server.Broadcaster.Connections[k] <- "Hello you're connection " + strconv.Itoa(int(k)) + " " + update
+			}
+			time.Sleep(60 * time.Second) // Send updates every 1 min
+		}
+	}()
 	return server
 }
