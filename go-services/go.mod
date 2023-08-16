@@ -12,6 +12,7 @@ require (
 	gorm.io/gorm v1.25.2
 )
 
+require github.com/go-redis/redis v6.15.9+incompatible // indirect
 
 require (
 	github.com/armon/go-metrics v0.4.1 // indirect
@@ -53,6 +54,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/radovskyb/watcher v1.0.7 // indirect
+	github.com/redis/go-redis v6.15.9+incompatible
 	github.com/segmentio/kafka-go v0.4.42 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
