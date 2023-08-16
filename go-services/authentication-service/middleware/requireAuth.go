@@ -6,11 +6,14 @@ import (
 	"os"
 	"score-tracker/authentication-service/initializers"
 	"score-tracker/authentication-service/models"
+	"score-tracker/caas"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
+
+var cache caas.Cache = caas.NewRedisCache("localhost:6379", 1, 10)
 
 func RequireAuth(c *gin.Context) {
 	//Get the cookie off req
@@ -51,6 +54,7 @@ func RequireAuth(c *gin.Context) {
 
 		//Attach to req
 		c.Set("user", user)
+		c.Set("cache", cache)
 
 		//continue
 		c.Next()
