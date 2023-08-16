@@ -6,12 +6,15 @@ import (
 	"os"
 	"score-tracker/authentication-service/initializers"
 	"score-tracker/authentication-service/models"
+	"score-tracker/notification-service/handlers"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var SSE = handlers.NewServer()
 
 func Signup(c *gin.Context) {
 	//Get email/pass from req.body
@@ -126,14 +129,15 @@ func Register(c *gin.Context) {
 	defer close(updateChan)
 
 	// Start a goroutine to send updates to the client
-	go func() {
+	/*go func() {
 		for {
 			update := time.Now().Format("2006-01-02 15:04:05")
 			updateChan <- update
 			time.Sleep(1 * time.Second) // Send updates every 1 second
 		}
-	}()
+	}()*/
 
+	SSE.Broadcaster.NewConnection <- updateChan
 	// Loop to write updates to the client as they arrive
 	for {
 		select {
